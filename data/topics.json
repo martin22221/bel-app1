@@ -1,0 +1,38 @@
+[
+  {
+    "slug": "pravopis",
+    "name": "Правопис",
+    "category": "LANGUAGE",
+    "description": "Правила за правилното изписване на думите в българския език."
+  },
+  {
+    "slug": "punktuatsia",
+    "name": "Пунктуация",
+    "category": "LANGUAGE",
+    "description": "Правила за употребата на препинателните знаци в изречението."
+  },
+  {
+    "slug": "gramatika",
+    "name": "Граматика",
+    "category": "LANGUAGE",
+    "description": "Части на речта, граматични форми и синтактични правила."
+  },
+  {
+    "slug": "leksika",
+    "name": "Лексика",
+    "category": "LANGUAGE",
+    "description": "Значение и употреба на думите, синоними, антоними и пароними."
+  },
+  {
+    "slug": "avtori-i-proizvedenia",
+    "name": "Автори и произведения",
+    "category": "LITERATURE",
+    "description": "Български автори, техните произведения и основни литературни факти."
+  },
+  {
+    "slug": "literaturni-termini",
+    "name": "Литературни термини",
+    "category": "LITERATURE",
+    "description": "Основни понятия, жанрове и художествени средства в литературата."
+  }
+]
