@@ -1,6 +1,11 @@
 import prisma from '../lib/prisma.js';
-import { badRequest, conflict } from '../utils/httpError.js';
-import { hashPassword, createToken, toPublicUser } from '../services/auth.service.js';
+import { badRequest, conflict, unauthorized } from '../utils/httpError.js';
+import {
+  hashPassword,
+  checkPassword,
+  createToken,
+  toPublicUser,
+} from '../services/auth.service.js';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -30,4 +35,23 @@ export async function register(req, res) {
   }
 
   res.status(201).json({ token: createToken(user), user: toPublicUser(user) });
+}
+
+// POST /api/auth/login
+// body: { email, password }
+export async function login(req, res) {
+  const email = typeof req.body?.email === 'string' ? req.body.email.trim().toLowerCase() : '';
+  const password = typeof req.body?.password === 'string' ? req.body.password : '';
+
+  if (!email || !password) throw badRequest('Въведете имейл и парола');
+
+  const user = await prisma.user.findUnique({ where: { email } });
+
+  // Едно и също съобщение при грешен имейл и при грешна парола,
+  // за да не се издава кои имейли са регистрирани
+  if (!user || !(await checkPassword(password, user.passwordHash))) {
+    throw unauthorized('Грешен имейл или парола');
+  }
+
+  res.json({ token: createToken(user), user: toPublicUser(user) });
 }
