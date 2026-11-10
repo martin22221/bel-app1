@@ -1,4 +1,4 @@
-// Схема на базата данни. Моделите се добавят в задача #11.
+// Схема на базата данни.
 // След промяна: npm run db:migrate
 
 generator client {
@@ -9,4 +9,62 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+enum Role {
+  STUDENT
+  TEACHER
+  ADMIN
+}
+
+enum TopicCategory {
+  LANGUAGE   // Български език
+  LITERATURE // Литература
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         Role     @default(STUDENT)
+  createdAt    DateTime @default(now())
+
+  @@map("users")
+}
+
+model Topic {
+  id          Int           @id @default(autoincrement())
+  name        String
+  slug        String        @unique
+  category    TopicCategory
+  description String?
+  questions   Question[]
+
+  @@map("topics")
+}
+
+model Question {
+  id          Int      @id @default(autoincrement())
+  topicId     Int
+  text        String
+  explanation String
+  difficulty  Int      @default(1) // 1 = лесен, 2 = среден, 3 = труден
+  createdAt   DateTime @default(now())
+  topic       Topic    @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  answers     Answer[]
+
+  @@index([topicId])
+  @@map("questions")
+}
+
+model Answer {
+  id         Int      @id @default(autoincrement())
+  questionId Int
+  text       String
+  isCorrect  Boolean  @default(false)
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@index([questionId])
+  @@map("answers")
 }
