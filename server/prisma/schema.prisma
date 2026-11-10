@@ -1,0 +1,12 @@
+// Схема на базата данни. Моделите се добавят в задача #11.
+// След промяна: npm run db:migrate
+
+generator client {
+  provider   = "prisma-client-js"
+  engineType = "client" // връзката минава през @prisma/adapter-pg (виж src/lib/prisma.js)
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
