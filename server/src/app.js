@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import routes from './routes/index.js';
 import { notFoundHandler, errorHandler } from './middleware/errorHandler.js';
 
 const app = express();
@@ -11,6 +12,8 @@ app.use(express.json());
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
 });
+
+app.use('/api', routes);
 
 // Тези двете винаги са последни
 app.use(notFoundHandler);
