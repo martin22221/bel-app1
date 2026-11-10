@@ -10,7 +10,6 @@ import {
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 // POST /api/auth/register
-// body: { name, email, password }
 export async function register(req, res) {
   const name = typeof req.body?.name === 'string' ? req.body.name.trim() : '';
   const email = typeof req.body?.email === 'string' ? req.body.email.trim().toLowerCase() : '';
@@ -29,7 +28,6 @@ export async function register(req, res) {
       data: { name, email, passwordHash: await hashPassword(password) },
     });
   } catch (err) {
-    // Двама се регистрират едновременно със същия имейл
     if (err.code === 'P2002') throw conflict('Този имейл вече е регистриран');
     throw err;
   }
@@ -38,7 +36,6 @@ export async function register(req, res) {
 }
 
 // POST /api/auth/login
-// body: { email, password }
 export async function login(req, res) {
   const email = typeof req.body?.email === 'string' ? req.body.email.trim().toLowerCase() : '';
   const password = typeof req.body?.password === 'string' ? req.body.password : '';
@@ -47,11 +44,14 @@ export async function login(req, res) {
 
   const user = await prisma.user.findUnique({ where: { email } });
 
-  // Едно и също съобщение при грешен имейл и при грешна парола,
-  // за да не се издава кои имейли са регистрирани
   if (!user || !(await checkPassword(password, user.passwordHash))) {
     throw unauthorized('Грешен имейл или парола');
   }
 
   res.json({ token: createToken(user), user: toPublicUser(user) });
+}
+
+// GET /api/auth/me
+export async function me(req, res) {
+  res.json({ user: toPublicUser(req.user) });
 }
